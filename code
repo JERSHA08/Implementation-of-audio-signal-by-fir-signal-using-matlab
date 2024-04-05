@@ -1,0 +1,66 @@
+clc 
+clear all
+close all
+recording=audiorecorder
+disp('START TO SPEAK/SING....')
+recordblocking(recording,20);
+disp('STOP SPEAKING/SINGING');
+play(recording)
+Y=getaudiodata(recording);
+N=1000        %ORDER OF FILTER
+fc=0.5;
+
+%HIGH Pass filter
+
+num1=fir1(N,fc,'high');
+den1=[1];
+fvtool(num1,den1);
+subplot(411);
+plot(Y)
+title('orignal signal')
+FILTER1=filter(num1,den1,Y)
+subplot(412);
+plot(FILTER1)
+title('filtered Hign pass signal')
+
+
+
+
+% LOW PASS FILTER
+num2=fir1(N,fc,'low');
+den2=[1];
+fvtool(num2,den2);
+subplot(413);
+plot(Y)
+title('orignal signal')
+FILTER2=filter(num2,den2,Y)
+subplot(414);
+plot(FILTER2)
+title('filtered low pass signal')
+
+%BANDPASS FILTER
+f2=0.3;
+f1=0.8;
+FILTER3=fir1(N,[f2,f1],'bandpass');
+fvtool(FILTER3,1)
+figure
+plot(FILTER3)
+
+
+%BAND STOP FILTER
+f2=0.1;
+f1=0.5;
+FILTER4=fir1(N,[f2,f1],'stop');
+fvtool(FILTER4,1)
+figure
+plot(FILTER4);
+
+% Playing filtered signals
+disp('Playing filtered High pass signal...')
+sound(FILTER1)
+pause(length(FILTER1)/44100 + 1); 
+disp('Playing ended')
+disp('Playing filtered low pass signal ...')
+sound(FILTER2)
+pause(length(FILTER2)/44100 + 1); 
+disp('Playing ended')
